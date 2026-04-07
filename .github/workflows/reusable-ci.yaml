@@ -16,7 +16,7 @@ jobs:
           cache: true
 
       - name: Unit Test
-        run: mise unit-test
+        run: mise unit-tests
 
       - name: Build
         run: mise build

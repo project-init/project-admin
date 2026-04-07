@@ -25,7 +25,7 @@ export function createApp() {
       }),
     )
     .use(healthcheckPlugin)
-    .use(metricsPlugin)
+    .use(metricsPlugin);
 
   return app.get('/', () => <LandingPage />);
 }
