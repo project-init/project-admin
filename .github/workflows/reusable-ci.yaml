@@ -3,6 +3,9 @@ name: Reusable CI
 on:
   workflow_call:
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   unit-test:
     runs-on: ubuntu-latest
