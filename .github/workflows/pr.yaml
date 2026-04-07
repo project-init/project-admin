@@ -9,9 +9,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   ci:
     uses: ./.github/workflows/reusable-ci.yaml
+    secrets: inherit
 
   lint-and-format:
     uses: ./.github/workflows/reusable-ensure-lint-and-format.yaml
+    secrets: inherit

@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+llms
+docs
+.output
+.next
+coverage
+.git
+Dockerfile
+docker-compose.yml
+*.log
+.env

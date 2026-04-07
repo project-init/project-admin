@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowImportingTsExtensions": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@config/*": ["src/config/*"],
+      "@helpers/*": ["src/helpers/*"]
+    },
+    "noEmit": true,
+    "plugins": [
+      {
+        "name": "@kitajs/ts-html-plugin"
+      }
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@kitajs/html",
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "moduleDetection": "force",
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

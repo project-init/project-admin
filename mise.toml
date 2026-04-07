@@ -1,40 +1,89 @@
 [tools]
-bun = "1.3.9"
+bun = "1.3.11"
+
+# Infrastructure
+opentofu = "1.11.5"
+awscli = "2.34.25"
 
 # Internal
-go = "1.26.1"
-"go:github.com/project-init/devex/cmd/sre" = "v0.12.0"
-
-[env]
-MISE_DISABLE_BACKENDS = "aqua,ubi"
+"go:github.com/project-init/devex/cmd/sre" = "v0.10.0"
+"go:github.com/project-init/devex/cmd/workplan" = "v0.10.0"
 
 [settings]
 experimental = true
 npm.bun = true
 
-# Setup
+# Build
+
+## Local
 
 [tasks.setup]
 run = "bun install"
 
-# Build
-
 [tasks.build]
-depends = ["setup"]
-# run = "bun run build"
-run = "echo TODO"
+run = "bun run build"
+
+[tasks.dev-up]
+depends = ["setup", "build"]
+run = "bun run dev"
+
+## Docker
+
+### Builds
+
+[tasks.docker-builder-instance]
+run = "./scripts/docker-builder-instance.sh"
+
+[tasks.bake]
+depends = [
+    "docker-builder-instance",
+]
+env = { DOCKER_BUILD_TARGET = "local", VERSION = "development" }
+run = "docker buildx bake --file docker/docker-bake.hcl --builder te-docker-builder --progress plain --load"
+
+[tasks.bake-final.env]
+DOCKER_BUILD_TARGET = "final"
+VERSION = "{{env.VERSION}}"
+GITHUB_TOKEN = "{{env.GITHUB_TOKEN}}"
+
+[tasks.bake-final]
+depends = [
+    "docker-builder-instance",
+]
+run = "docker buildx bake --file docker/docker-bake.hcl --builder te-docker-builder --progress plain --no-cache --load"
+
+### Services
+
+[tasks.services-up]
+depends = [
+    "down",
+    "bake",
+]
+env = { SERVICE_NAME = "api", RUN_AS_TEST_SERVER = "false" }
+run = "docker compose --env-file .env -f docker/docker-compose.yaml up --wait -d"
+
+[tasks.down]
+run = "docker compose -f docker/docker-compose.yaml down --remove-orphans"
+
+[tasks.logs]
+run = "docker compose -f docker/docker-compose.yaml logs -f"
 
 # Tests
 
-[tasks.test]
-depends = [
-    "unit-test"
+[tasks.unit-tests]
+depends = ["setup"]
+run = "echo 'TODO: add unit tests when there is real logic to test'"
+
+[tasks.integration-tests]
+depends = ["services-up"]
+run = [
+    "mise integration-tests-only",
+    "mise down"
 ]
 
-[tasks.unit-test]
+[tasks.integration-tests-only]
 depends = ["setup"]
-# run = "bun run test"
-run = "echo TODO"
+run = "bun test .integration.test"
 
 # Linting
 
@@ -48,6 +97,9 @@ run = "sh ./scripts/sync-prettier-config.sh"
 depends = ["setup", "format-prettier-sync"]
 run = "bun run format"
 
+[tasks.format-tofu]
+run = "tofu fmt -recursive"
+
 [tasks.lint]
 depends = ["lint-*"]
 
@@ -60,8 +112,3 @@ run = "bun run lint"
 [tasks.update-dependencies]
 run = "bun update"
 depends_post = ["setup"]
-
-# Release
-
-[tasks.release]
-run = "sre release"

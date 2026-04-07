@@ -1,0 +1,35 @@
+name: project-admin
+
+services:
+  app:
+    image: project-admin-app:development
+    platform: linux/arm64
+    command: sh -lc "bun install --dev && bun run dev"
+    working_dir: /app
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      NODE_ENV: development
+    networks:
+      - project-admin
+    ports:
+      - '9001:3000'
+    volumes:
+      - ${PWD}:/app
+    tty: true
+    stdin_open: true
+    stop_grace_period: 1s
+    healthcheck:
+      test:
+        ['CMD', 'bun', '-e', 'await fetch("http://127.0.0.1:3000/healthcheck")']
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 120s
+
+networks:
+  project-admin:
+    name: project-admin
+
+secrets:
+  GITHUB_TOKEN:
+    environment: GITHUB_TOKEN
