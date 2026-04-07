@@ -9,7 +9,6 @@ services:
     environment:
       GITHUB_TOKEN: ${GITHUB_TOKEN}
       NODE_ENV: development
-      DATA_PLATFORM_HOST: data-platform:9001
     networks:
       - project-admin
     ports:

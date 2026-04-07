@@ -7,7 +7,7 @@ export function AppLayout({
   title: string;
   csrfToken?: string;
 }) {
-  const htmxHeaders = csrfToken
+  const headers = csrfToken
     ? JSON.stringify({ ['x-csrf-token']: csrfToken })
     : undefined;
 
@@ -24,7 +24,7 @@ export function AppLayout({
         <script src="/vendor/idiomorph.min.js" />
         <script src="/vendor/surreal.min.js" />
       </head>
-      <body class="min-h-screen" hx-headers={htmxHeaders}>
+      <body class="min-h-screen" hx-headers={headers}>
         {children}
       </body>
     </html>

@@ -60,9 +60,11 @@ export function LandingPage({
                   <li>• View User Activity Logs</li>
                   <li>• Invite New Users</li>
                 </ul>
-                <div class="mt-8 flex justify-end">
+                <div class="mt-8 flex justify-end" id="main-content">
                   <a
-                    href="/users"
+                    hx-get="/users"
+                    hx-target="#main-content"
+                    hx-push-url="true"
                     class="inline-flex rounded-md bg-brand-500 px-6 py-3 text-xl font-semibold text-white hover:bg-brand-400"
                   >
                     Manage Users
